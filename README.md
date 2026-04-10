@@ -1,75 +1,89 @@
-# React + TypeScript + Vite
+# GraphQL Tiny Lab
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Learn GraphQL by shaping live data in a playful visual lab.
 
-Currently, two official plugins are available:
+An interactive, browser-based playground for learning how GraphQL queries work. Pick fields, write queries, and watch the response shape change in real time — no server, no setup.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## What it teaches
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- **Field selection** — request only the fields you need and see exactly what comes back
+- **Nested queries** — explore how `user`, `posts`, and `stats` nest inside a single query
+- **Arguments** — filter and sort with `minLikes`, `published`, `orderBy`, and `limit`
+- **Response shape** — the live diagram and payload panel make the query ↔ result relationship tangible
 
-Note: This will impact Vite dev & build performances.
+---
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+| Panel | What it does |
+| --- | --- |
+| **Visual Query Builder** | Click field chips to add/remove fields; arguments exposed as sliders and toggles |
+| **Query Editor** | Edit raw GraphQL syntax directly; syntax errors shown inline |
+| **Live Diagram** | Animated tree that mirrors the selected field structure in real time |
+| **Mock Datasource** | Table of generated records with rows highlighted when they appear in the result |
+| **Result Payload** | Formatted JSON output with field count and byte size |
+| **Code Snippets** | Ready-to-copy `graphql-request` (frontend) and `graphql-yoga` (backend) examples |
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Query arguments
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+The `posts` field accepts arguments that filter and sort the result:
+
+```graphql
+{
+  user { id name }
+  posts(minLikes: 10, published: true, orderBy: LIKES_DESC, limit: 5) {
+    title
+    likes
+  }
+  stats { total published }
+}
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+| Argument | Type | Effect |
+| --- | --- | --- |
+| `minLikes` | `Int` | Only include posts with at least this many likes |
+| `published` | `Boolean` | When `true`, only return published posts |
+| `orderBy` | `Enum` | `LIKES_ASC`, `LIKES_DESC`, `TITLE_ASC`, `TITLE_DESC` |
+| `limit` | `Int` | Cap the number of returned posts |
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Tech stack
+
+- **React 19** with the experimental React Compiler (`babel-plugin-react-compiler`)
+- **TypeScript 5.9** — strict mode
+- **Vite 8** — dev server and build
+- Custom GraphQL query parser and executor (no external GraphQL library)
+- Pure CSS — no utility framework
+
+---
+
+## Getting started
+
+```bash
+npm install
+npm run dev      # http://localhost:5173
+npm run build    # production build → dist/
+npm run preview  # preview the build locally
 ```
+
+---
+
+## Scope
+
+This is a learning tool, not a GraphQL spec implementation. Not included:
+
+- Fragments, directives, variables, aliases
+- Mutations or subscriptions
+- Schema introspection
+- A real GraphQL server
+
+---
+
+## License
+
+MIT
